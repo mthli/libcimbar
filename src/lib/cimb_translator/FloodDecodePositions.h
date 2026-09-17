@@ -16,14 +16,18 @@ public:
 	// compress these types down to reduce size and cache pressure?
 	// i.e. with a struct ...
 	using decode_instructions = std::tuple<CellDrift, uint8_t, uint8_t>; // drift, best_prio, cooldown_pos
-	using decode_prio = std::tuple<uint16_t, uint8_t>; // index, prio
+	using decode_prio = std::tuple<uint16_t, uint8_t, uint32_t>; // index, prio, seq
 
 	class PrioCompare
 	{
 	public:
 		bool operator()(const decode_prio& a, const decode_prio& b) const
 		{
-			return std::get<1>(a) > std::get<1>(b);
+			// lowest prio value first. Ties go first-in-first-out, so the flood expands
+			// breadth-first and the order is the same on every std::priority_queue implementation.
+			if (std::get<1>(a) != std::get<1>(b))
+				return std::get<1>(a) > std::get<1>(b);
+			return std::get<2>(a) > std::get<2>(b);
 		}
 	};
 
@@ -40,11 +44,13 @@ public:
 	const CellPositions::positions_list& positions() const;
 
 protected:
+	void push(uint16_t index, uint8_t prio);
 	int update_adjacents(const std::array<int,4>& adj, const CellDrift& drift, unsigned error_distance, uint8_t cooldown);
 
 protected:
 	unsigned _index;
 	unsigned _count;
+	uint32_t _seq = 0;
 	std::priority_queue<decode_prio, std::vector<decode_prio>, PrioCompare> _heap;
 	std::vector<bool> _remaining;
 	std::vector<decode_instructions> _instructions;

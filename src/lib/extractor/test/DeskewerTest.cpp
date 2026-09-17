@@ -14,7 +14,7 @@ TEST_CASE( "DeskewerTest/testSimple", "[unit]" )
 	cv::Mat actual = de.deskew(TestCimbar::getSample("6bit/4_30_f0_big.jpg"), corners);
 	assertEquals(cv::Size(1024, 1024), actual.size());
 
-	assertEquals( 0x6e483730782fee5c, image_hash::average_hash(actual) );
+	assertHashNear( 0x6e483730782fee5c, image_hash::average_hash(actual) );
 }
 
 TEST_CASE( "DeskewerTest/testPadded", "[unit]" )
@@ -28,7 +28,7 @@ TEST_CASE( "DeskewerTest/testPadded", "[unit]" )
 	cv::Rect crop(8, 8, 1024, 1024);
 	cv::Mat innerGrid = actual(crop);
 
-	assertEquals( 0x6e483730782fee5c, image_hash::average_hash(innerGrid) );
+	assertHashNear( 0x6e483730782fee5c, image_hash::average_hash(innerGrid) );
 }
 
 

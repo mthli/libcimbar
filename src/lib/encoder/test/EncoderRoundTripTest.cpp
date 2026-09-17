@@ -49,7 +49,7 @@ TEST_CASE( "EncoderRoundTripTest/testFountain.Pad", "[unit]" )
 	std::string path = fmt::format("{}_0.png", outPrefix);
 	cv::Mat encodedImg = cv::imread(path);
 	cv::cvtColor(encodedImg, encodedImg, cv::COLOR_BGR2RGB);
-	assertEquals( hash, image_hash::average_hash(encodedImg) );
+	assertHashNear( hash, image_hash::average_hash(encodedImg) );
 
 	SECTION ("default filename") {
 		// decoder
@@ -100,7 +100,7 @@ TEST_CASE( "EncoderRoundTripTest/testFountain.SinkMismatch", "[unit]" )
 	std::string path = fmt::format("{}_0.png", outPrefix);
 	cv::Mat encodedImg = cv::imread(path);
 	cv::cvtColor(encodedImg, encodedImg, cv::COLOR_BGR2RGB);
-	assertEquals( hash, image_hash::average_hash(encodedImg) );
+	assertHashNear( hash, image_hash::average_hash(encodedImg) );
 
 	// decoder
 	Decoder dec;

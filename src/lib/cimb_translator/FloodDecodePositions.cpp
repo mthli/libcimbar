@@ -18,6 +18,7 @@ void FloodDecodePositions::reset()
 {
 	_index = 0;
 	_count = 0;
+	_seq = 0;
 	_remaining.clear();
 	for (unsigned i = 0; i < _positions.size(); ++i)
 	{
@@ -28,17 +29,22 @@ void FloodDecodePositions::reset()
 	// seed
 	uint16_t smallRowLen = _cellFinder.calc_mid_width();
 	uint16_t lastElem = _positions.size()-1;
-	_heap.push({0, 0});
-	_heap.push({smallRowLen-1, 0});
-	_heap.push({lastElem, 0});
-	_heap.push({lastElem-(smallRowLen-1), 0});
+	push(0, 0);
+	push(smallRowLen-1, 0);
+	push(lastElem, 0);
+	push(lastElem-(smallRowLen-1), 0);
 
 	// add more seed corners?
 	uint16_t betweenMarkerBlock = _cellFinder.first_mid();
-	_heap.push({betweenMarkerBlock, 1});
-	_heap.push({betweenMarkerBlock+_cellFinder.dimensions_x()-1, 1});
-	_heap.push({lastElem-betweenMarkerBlock, 1});
-	_heap.push({lastElem-(betweenMarkerBlock+_cellFinder.dimensions_x()-1), 1});
+	push(betweenMarkerBlock, 1);
+	push(betweenMarkerBlock+_cellFinder.dimensions_x()-1, 1);
+	push(lastElem-betweenMarkerBlock, 1);
+	push(lastElem-(betweenMarkerBlock+_cellFinder.dimensions_x()-1), 1);
+}
+
+void FloodDecodePositions::push(uint16_t index, uint8_t prio)
+{
+	_heap.push({index, prio, _seq++});
 }
 
 bool FloodDecodePositions::done() const
@@ -50,7 +56,7 @@ FloodDecodePositions::iter FloodDecodePositions::next()
 {
 	while (!_heap.empty())
 	{
-		auto [i, _] = _heap.top();
+		uint16_t i = std::get<0>(_heap.top());
 		_heap.pop();
 
 		std::vector<bool>::reference needsDecode = _remaining[i];
@@ -76,7 +82,7 @@ int FloodDecodePositions::update_adjacents(const std::array<int,4>& adj, const C
 		if (std::get<1>(di) <= error_distance)
 			continue;
 		di = {drift, error_distance, cooldown};
-		_heap.push({next, error_distance});
+		push(next, error_distance);
 	}
 
 	return 0;

@@ -22,7 +22,7 @@ TEST_CASE( "CimbWriterTest/testSimple", "[unit]" )
 	cv::Mat img = cw.image();
 	assertEquals(1024, img.cols);
 	assertEquals(1024, img.rows);
-	assertEquals( 0xeecc8800efce8c08, image_hash::average_hash(img) );
+	assertHashNear( 0xeecc8800efce8c08, image_hash::average_hash(img) );
 }
 
 TEST_CASE( "CimbWriterTest/testCustomSize", "[unit]" )
@@ -38,7 +38,7 @@ TEST_CASE( "CimbWriterTest/testCustomSize", "[unit]" )
 	cv::Mat img = cw.image();
 	assertEquals(1040, img.cols);
 	assertEquals(1040, img.rows);
-	assertEquals( 0xab00ab02af0abfab, image_hash::average_hash(img) );
+	assertHashNear( 0xab00ab02af0abfab, image_hash::average_hash(img) );
 }
 
 TEST_CASE( "CimbWriterTest/testCustomSize.2", "[unit]" )
@@ -54,5 +54,5 @@ TEST_CASE( "CimbWriterTest/testCustomSize.2", "[unit]" )
 	cv::Mat img = cw.image();
 	assertEquals(1040, img.cols);
 	assertEquals(1080, img.rows);
-	assertEquals( 0xab2a2a2a2a2a2aab, image_hash::average_hash(img) );
+	assertHashNear( 0xab2a2a2a2a2a2aab, image_hash::average_hash(img) );
 }

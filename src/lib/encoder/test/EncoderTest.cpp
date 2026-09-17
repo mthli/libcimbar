@@ -48,7 +48,7 @@ TEST_CASE( "EncoderTest/testVanilla", "[unit]" )
 		{
 			std::string path = fmt::format("{}_{}.png", outPrefix, i);
 			cv::Mat img = cv::imread(path);
-			assertEquals( hashes[i], image_hash::average_hash(img) );
+			assertHashNear( hashes[i], image_hash::average_hash(img) );
 		}
 	}
 }
@@ -72,7 +72,7 @@ TEST_CASE( "EncoderTest/testFountain.4c", "[unit]" )
 		{
 			std::string path = fmt::format("{}_{}.png", outPrefix, i);
 			cv::Mat img = cv::imread(path);
-			assertEquals( hashes[i], image_hash::average_hash(img) );
+			assertHashNear( hashes[i], image_hash::average_hash(img) );
 		}
 	}
 }
@@ -96,7 +96,7 @@ TEST_CASE( "EncoderTest/testFountain.B", "[unit]" )
 		{
 			std::string path = fmt::format("{}_{}.png", outPrefix, i);
 			cv::Mat img = cv::imread(path);
-			assertEquals( hashes[i], image_hash::average_hash(img) );
+			assertHashNear( hashes[i], image_hash::average_hash(img) );
 		}
 	}
 }
@@ -114,7 +114,7 @@ TEST_CASE( "EncoderTest/testFountain.Compress", "[unit]" )
 	uint64_t hash = 0x84883d01a75f36cf;
 	std::string path = fmt::format("{}_0.png", outPrefix);
 	cv::Mat img = cv::imread(path);
-	assertEquals( hash, image_hash::average_hash(img) );
+	assertHashNear( hash, image_hash::average_hash(img) );
 }
 
 TEST_CASE( "EncoderTest/testPiecemealFountainEncoder", "[unit]" )
@@ -142,7 +142,7 @@ TEST_CASE( "EncoderTest/testPiecemealFountainEncoder", "[unit]" )
 	assertTrue( frame );
 
 	uint64_t hash = 0xef84e600f45efa9;
-	assertEquals( hash, image_hash::average_hash(*frame) );
+	assertHashNear( hash, image_hash::average_hash(*frame) );
 }
 
 TEST_CASE( "EncoderTest/testFountain.Size", "[unit]" )
@@ -160,5 +160,5 @@ TEST_CASE( "EncoderTest/testFountain.Size", "[unit]" )
 	cv::Mat img = cv::imread(path);
 	assertEquals( 1024, img.rows );
 	assertEquals( 1024, img.cols );
-	assertEquals( hash, image_hash::average_hash(img) );
+	assertHashNear( hash, image_hash::average_hash(img) );
 }

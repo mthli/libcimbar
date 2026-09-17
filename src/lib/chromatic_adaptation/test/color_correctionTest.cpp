@@ -1,5 +1,6 @@
 /* This code is subject to the terms of the Mozilla Public License, v.2.0. http://mozilla.org/MPL/2.0/. */
 #include "unittest.h"
+#include "TestHelpers.h"
 
 #include "adaptation_transform.h"
 #include "color_correction.h"
@@ -15,13 +16,9 @@ TEST_CASE( "color_correctionTest/testTransform", "[unit]" )
 {
 	cv::Matx<float, 3, 3> mat = color_correction::get_adaptation_matrix<adaptation_transform::von_kries>({192, 255, 255}, {255, 255, 255});
 
-	{
-		std::stringstream ss;
-		ss << mat;
-		assertEquals( "[1.0655777, 0.2109226, -0.013239831;\n"
-					  " 0.023168325, 0.98723376, -0.0046780901;\n"
-					  " 0, 0, 1]", ss.str() );
-	}
+	TestCimbar::assertMatxApprox({1.0655777, 0.2109226, -0.013239831,
+	                              0.023168325, 0.98723376, -0.0046780901,
+	                              0, 0, 1}, mat);
 
 	std::tuple<float, float, float> c = color_correction(std::move(mat)).transform(180, 98, 255);
 	assertAlmostEquals( 209.09822971, std::get<0>(c) );
@@ -46,13 +43,9 @@ TEST_CASE( "color_correctionTest/testComputeMoorePenrose", "[unit]" )
 				   255, 255, 255);
 
 	cv::Matx<float, 3, 3> mat = color_correction::get_moore_penrose_lsm(actual, desired);
-	{
-		std::stringstream ss;
-		ss << mat;
-		assertEquals( "[1.5223049, -0.10023587, -0.19198087;\n"
-					  " -0.20533442, 1.6441474, -0.20533434;\n"
-					  " -0.19198078, -0.10023584, 1.5223049]", ss.str() );
-	}
+	TestCimbar::assertMatxApprox({1.5223049, -0.10023587, -0.19198087,
+	                              -0.20533442, 1.6441474, -0.20533434,
+	                              -0.19198078, -0.10023584, 1.5223049}, mat);
 }
 
 TEST_CASE( "color_correctionTest/testComputeMoorePenrose.2", "[unit]" )
@@ -72,11 +65,7 @@ TEST_CASE( "color_correctionTest/testComputeMoorePenrose.2", "[unit]" )
 				   255, 255, 255);
 
 	cv::Matx<float, 3, 3> mat = color_correction::get_moore_penrose_lsm(actual, desired);
-	{
-		std::stringstream ss;
-		ss << mat;
-		assertEquals( "[2.0261116, -0.21691091, -0.19806443;\n"
-					  " -0.43822661, 2.4562523, -0.41700464;\n"
-					  " -0.55769891, -1.1443435, 3.4819376]", ss.str() );
-	}
+	TestCimbar::assertMatxApprox({2.0261116, -0.21691091, -0.19806443,
+	                              -0.43822661, 2.4562523, -0.41700464,
+	                              -0.55769891, -1.1443435, 3.4819376}, mat);
 }

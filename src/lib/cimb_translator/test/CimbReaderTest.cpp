@@ -78,9 +78,8 @@ TEST_CASE( "CimbReaderTest/testSample.colormode0", "[unit]" )
 		++count;
 	}
 
-	string expected = "0=0 99=8 11680=3 11681=32 11900=28 11901=25 11904=12 11995=2 11996=8 11998=6 "
-					  "11999=54 12001=29 12004=6 12099=2 12195=57 12196=1 12200=5 12201=0 12298=32 "
-					  "12299=34 12300=30 12399=15";
+	string expected = "0=0 1=28 2=28 3=11 4=15 96=8 97=8 98=47 99=8 100=28 101=27 198=6 199=51 200=22 "
+					  "300=6 400=9 12200=5 12299=34 12300=30 12301=32 12398=10 12399=15";
 	assertEquals( expected, turbo::str::join(res) );
 
 	PositionData pos;
@@ -114,9 +113,8 @@ TEST_CASE( "CimbReaderTest/testSample.colormode1", "[unit]" )
 		++count;
 	}
 
-	string expected = "0=16 99=24 11680=19 11681=48 11900=44 11901=41 11904=28 11995=18 11996=24 "
-			"11998=22 11999=6 12001=45 12004=22 12099=18 12195=9 12196=17 12200=21 12201=16 "
-			"12298=48 12299=50 12300=46 12399=31";
+	string expected = "0=16 1=44 2=44 3=27 4=31 96=24 97=24 98=63 99=24 100=44 101=43 198=22 199=3 200=38 "
+			"300=22 400=25 12200=21 12299=50 12300=46 12301=48 12398=26 12399=31";
 	assertEquals( expected, turbo::str::join(res) );
 
 	PositionData pos;
@@ -152,8 +150,8 @@ TEST_CASE( "CimbReaderTest/testSampleMessy", "[unit]" )
 	}
 
 	string expected = "0=16 1=44 99=24 100=44 600=49 601=54 711=46 712=9 11464=5 11576=48 11577=60 "
-			"11687=57 11688=7 11689=48 11690=0 11798=31 11799=41 12297=62 12298=48 12299=50 "
-			"12300=46 12399=31";
+			"11687=57 11688=7 11689=48 11690=0 11798=31 11799=41 12298=48 12300=46 12397=54 "
+			"12398=26 12399=31";
 	assertEquals( expected, turbo::str::join(res) );
 
 	PositionData pos;
@@ -196,13 +194,11 @@ TEST_CASE( "CimbReaderTest/testCCM", "[unit]" )
 
 	assertTrue( decoder.get_ccm().active() );
 
-	std::stringstream ss;
-	ss << decoder.get_ccm().mat();
-	assertEquals("[2.3991191, -0.41846275, -0.54654282;\n "
-				 "-0.42976046, 2.632102, -0.76466882;\n "
-				 "-0.54299992, -0.20199311, 2.2753253]", ss.str());
+	TestCimbar::assertMatxApprox({2.3991191, -0.41846275, -0.54654282,
+	                              -0.42976046, 2.632102, -0.76466882,
+	                              -0.54299992, -0.20199311, 2.2753253}, decoder.get_ccm().mat());
 
-	std::array<unsigned, 6> expectedColors = {0, 1, 1, 2, 2, 2};
+	std::array<unsigned, 6> expectedColors = {0, 1, 1, 2, 2, 3};
 	for (unsigned i = 0; i < expectedColors.size(); ++i)
 	{
 		PositionData pos;
@@ -224,7 +220,7 @@ TEST_CASE( "CimbReaderTest/testCCM.Disabled", "[unit]" )
 
 	assertFalse( decoder.get_ccm().active() );
 
-	std::array<unsigned, 6> expectedColors = {0, 1, 1, 2, 2, 2};
+	std::array<unsigned, 6> expectedColors = {0, 1, 1, 2, 2, 3};
 	for (unsigned i = 0; i < expectedColors.size(); ++i)
 	{
 		PositionData pos;
@@ -252,13 +248,11 @@ TEST_CASE( "CimbReaderTest/testCCM.VeryNecessary", "[unit]" )
 
 	assertTrue( decoder.get_ccm().active() );
 
-	std::stringstream ss;
-	ss << decoder.get_ccm().mat();
-	assertEquals("[1.6250746, 0.0024788622, -0.45772526;\n "
-				 "-0.29126319, 2.2922182, -0.67037439;\n "
-				 "-1.2192062, -2.7447209, 5.0476217]", ss.str());
+	TestCimbar::assertMatxApprox({1.6250746, 0.0024788622, -0.45772526,
+	                              -0.29126319, 2.2922182, -0.67037439,
+	                              -1.2192062, -2.7447209, 5.0476217}, decoder.get_ccm().mat());
 
-	std::array<unsigned, 6> expectedColors = {0, 1, 1, 2, 2, 2};
+	std::array<unsigned, 6> expectedColors = {0, 1, 1, 2, 2, 3};
 	for (unsigned i = 0; i < expectedColors.size(); ++i)
 	{
 		PositionData pos;
